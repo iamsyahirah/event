@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('event_tag', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tag_id')->constrained()->cascadeOnDelete();
+             $table->foreignId('event_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
