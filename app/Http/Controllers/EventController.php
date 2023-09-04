@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateEventRequest;
+use App\Http\Requests\UpdateEventRequest;
 use App\Models\Country;
 use App\Models\Event;
 use App\Models\Tag;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -72,10 +74,20 @@ class EventController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateEventRequest $request, Event $event): RedirectResponse
     {
-        //
-    }
+        $data = $request->validated();
+        if ($request->hasFile('image')){
+            Storage::delete($event->image);
+            $data = $request->validated();
+            $data['image'] = Storage::putFile('events', $request->file('image'));  
+        }
+         $data['slug'] = Str::slug($request->title);
+         $event->update($data);
+         $event->tags()->sync($request->tags);
+         return to_route('events.index');
+        }
+    
 
     /**
      * Remove the specified resource from storage.
