@@ -62,9 +62,11 @@ class EventController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Event $event)
     {
-        //
+        $countries = Country::all();
+        $tags = Tag::all();
+        return view ('events.edit', compact('countries','tags','event'));
     }
 
     /**
